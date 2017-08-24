@@ -74,9 +74,17 @@ var myStyle = {
 };
 
 
+var myOnEachFeature = function(feature, layer) {
+        layer.on('click', function(e) {
+            console.log(feature.properties.YOMI);
+        });
+};
+
+
 $.getJSON("./nakagyo.geojson", function(data) {
     L.geoJson(data, {
-        style: myStyle
+        style: myStyle,
+        onEachFeature: myOnEachFeature,
     }).addTo(map);
 });
 
