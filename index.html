@@ -53,14 +53,33 @@ html,body{margin: 5px; padding: 0;}
 
 <body>
 <div id="str">ここに町名を表示します。</div>
+<input type="button" onclick="OnButtonClick();" value="緯度経度を取得"/>
+<div id="latlon_info"></div>
 <div id="map"></div>
 
 <script>
+var arg = new Object;
+var pair=location.search.substring(1).split('&');
+for(var i=0;pair[i];i++) {
+    var kv = pair[i].split('=');
+    arg[kv[0]]=kv[1];
+}
+
+var center = [35.0157424,135.7625368];
+var zoom = 16.0;
+
+if ('lat' in arg & 'lon' in arg & 'zoom' in arg) {
+    center[0] = parseFloat(arg.lat);
+    center[1] = parseFloat(arg.lon);
+    zoom = parseFloat(arg.zoom);
+}
+
+
 // Add a Mapzen API key
 L.Mapzen.apiKey = 'mapzen-mQFhAuk';
 var map = L.Mapzen.map('map', {
-  center:[35.0157424,135.7625368],
-  zoom: 16,
+  center: center,
+  zoom: zoom,
   tangramOptions: {
     scene: L.Mapzen.BasemapStyles.TronMoreLabels
   }
@@ -86,14 +105,19 @@ var myOnEachFeature = function(feature, layer) {
 };
 
 
-$.getJSON("./nakagyo.geojson", function(data) {
-    L.geoJson(data, {
-        style: myStyle,
-        onEachFeature: myOnEachFeature,
-    }).addTo(map);
-});
+// $.getJSON("./nakagyo.geojson", function(data) {
+//     L.geoJson(data, {
+//         style: myStyle,
+//         onEachFeature: myOnEachFeature,
+//     }).addTo(map);
+// });
 
-
+function OnButtonClick(){
+  lat_info = map.getCenter().lat;
+  lon_info = map.getCenter().lng;
+  zoom_info = map.getZoom();
+  document.getElementById("latlon_info").textContent = "lat="+lat_info+"&lon="+lon_info+"&zoom="+zoom_info;
+}
 
 
 </script>
